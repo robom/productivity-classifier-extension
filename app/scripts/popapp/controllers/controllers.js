@@ -1,4 +1,4 @@
-angular.module('popup')
+angular.module('productivity')
   .controller('MainController', ['$scope', function($scope) {
       $scope.welcomeMsg = "This is your first chrome extension";
 

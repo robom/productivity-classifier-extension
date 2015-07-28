@@ -105,7 +105,7 @@ module.exports = function (grunt) {
                 dest: '<%= yeoman.dist %>'
             },
             html: [
-                '<%= yeoman.app %>/popup.html',
+                '<%= yeoman.app %>/productivity.html',
                 '<%= yeoman.app %>/background.html'
             ]
         },
@@ -139,7 +139,7 @@ module.exports = function (grunt) {
             dist: {
                 files: {
                     '<%= yeoman.dist %>/popup.css': [
-                        '<%= yeoman.app %>/css/popup.css'
+                        '<%= yeoman.app %>/css/productivity.css'
                     ]
                 }
             }
