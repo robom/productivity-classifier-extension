@@ -1,3 +1,3 @@
-A Chrome Extension for Webpage Productivity Classifier
+Chrome Extension for Webpage Productivity Classifier
 ================
 
