@@ -32,7 +32,8 @@
         "clipboardRead",
         "clipboardWrite",
         "tabs",
-        "<all_urls>"
+        "<all_urls>",
+        "alarms"
     ],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "web_accessible_resources": [
@@ -51,6 +52,14 @@
             ],
             "js": [
                 "bower_components/jquery/dist/jquery.min.js",
+                "bower_components/underscore/underscore.js",
+                "lib/tfidf/underscore.string.min.js",
+                "lib/tfidf/stopwords.js",
+                "lib/tfidf/tfidf.js",
+                "lib/tfidf/tokenize.js",
+                "lib/tfidf/corpus_tools.js",
+                "lib/tfidf/collections_tools.js",
+                "lib/tfidf/stemmer-min.js",
                 "scripts/contentscript.js"
             ],
             "run_at": "document_end",
