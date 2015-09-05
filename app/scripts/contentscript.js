@@ -1,44 +1,94 @@
+var scroll_count = 0;
+var active_since = Date.now();
+
 chrome.runtime.onMessage.addListener(
-    function (request) {
-        var currentUrl = $(location).attr('href');
-        if (request.message === "tab_changed" && currentUrl != request.previous_url) {
-            var title = $(document).find("title").text();
-            var headers = joinDivsText($('h1'));
-            var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content")
+  function (request) {
+    var currentUrl = $(location).attr('href');
+    if (request.message === "tab_changed" && currentUrl != request.previous_url) {
+      var title = $(document).find("title").text();
+      var headers = joinDivsText($('h1'));
+      var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content")
 
-            var corpus = joinDivsText(getTextNodesIn('div'));
-            var tfidf = analyze_web_text(corpus);
-            var referrer =  document.referrer;
+      var corpus = joinDivsText(getTextNodesIn('div'));
+      var tfidf = analyze_web_text(corpus);
 
-            console.log('change 3 ' + currentUrl);
-            chrome.runtime.sendMessage({
-                "message": "tab_changed_url",
-                "url": currentUrl,
-                "tfidf": tfidf,
-                "title": title,
-                "headers": headers,
-                "tab_id": request.tab_id,
-                "previous_tab_id": request.previous_tab_id,
-                "previous_url": request.previous_url,
-                "referrer ": referrer ,
-                "meta_description": meta_description
-            });
-            console.log('change 2 ' + currentUrl);
+      var referrer = document.referrer;
 
-        } else if (request.message === 'active_status') {
-            chrome.runtime.sendMessage({
-                message: 'active_status',
-                active: document.hasFocus()
-            });
-        }
+      console.log('change 3 ' + currentUrl);
+      chrome.runtime.sendMessage({
+        "message": "tab_changed_url",
+        "url": currentUrl,
+        "tfidf": tfidf,
+        "title": title,
+        "headers": headers,
+        "tab_id": request.tab_id,
+        "previous_tab_id": request.previous_tab_id,
+        "previous_url": request.previous_url,
+        "referrer ": referrer,
+        "meta_description": meta_description
+      });
+      console.log('change 2 ' + currentUrl);
+
+    } else if (request.message === 'active_status') {
+      chrome.runtime.sendMessage({
+        message: 'active_status',
+        active: document.hasFocus()
+      });
     }
+  }
 );
 
 function joinDivsText(divs) {
-    return $.map(
-        divs,
-        function (element) {
-            return $(element).text()
-        }
-    ).join(" ");
+  return $.map(
+    divs,
+    function (element) {
+      return $(element).text()
+    }
+  ).join(" ");
+}
+
+function page_info() {
+  var title = $(document).find("title").text();
+  var headers = joinDivsText($('h1'));
+  var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content")
+
+  var corpus = joinDivsText(getTextNodesIn('div'));
+  var tfidf = analyze_web_text(corpus);
+
+  var referrer = document.referrer;
+
+  return ( {
+    "title": title,
+    "tfidf": tfidf,
+    "headers": headers,
+    "meta_description": meta_description,
+    "referrer ": referrer
+  } );
+}
+
+function current_state() {
+  var currentUrl = $(location).attr('href');
+  var active_length = (active_since - Date.now()) / 1000;
+  return ({
+    "url": currentUrl,
+    "scroll_count": scroll_count,
+    "active_length": active_length
+  })
+}
+
+function focusGained() {
+  active_since = Date.now();
+  scroll_count = 0;
+}
+
+function focusLost() {
+  var params = current_state();
+  if (active_length >= 4) {
+    chrome.runtime.sendMessage({
+      "message": "send_to_server",
+      "action": "page_lost_focus",
+      "params": params
+    });
+  }
+
 }

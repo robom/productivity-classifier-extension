@@ -1,34 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" ng-app=productivity ng-csp>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- build:css productivity.css -->
-        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" type="screen">
-        <link rel="stylesheet" href="bower_components/angular/angular-csp.css" type="screen">
-        <link rel="stylesheet" href="css/productivity.css" type="screen">
-        <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" type="screen">
+    <link rel="stylesheet" href="bower_components/angular/angular-csp.css" type="screen">
+    <link rel="stylesheet" href="css/productivity.css" type="screen">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <!-- endbuild -->
     <title>Productivity Extension</title>
-  </head>
+</head>
 
-  <body>
+<body ng-app="productivity">
 
-    <div ng-controller="MainController">
-        <h1>Hey! {{welcomeMsg}}</h1>
-        <button class="btn btn-info" ng-click="contribute()">Contribute</button>
-    </div>
+<!--<div ng-controller="MainController">-->
+    <header class="header">
+        <nav class="header__nav">
+            <ul class="nav">
+                <li class="nav__item">
+                    <a ui-sref="me">Me (protected)</a>
+                </li>
+            </ul>
+        </nav>
+        <div ui-view></div>
+        <div class="header__oauth" ng-include="'/scripts/popapp/views/oauth.html'"></div>
+    </header>
+    <!--<div login-directive></div>-->
+    <!--<div user-profile></div>-->
+<!--</div>-->
 
-    <!-- build:js productivity.js -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/underscore/underscore.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
-    <script type="text/javascript" src="scripts/popapp/modules/angular-underscore.min.js"></script>
-    <script type="text/javascript" src="scripts/popapp/modules/ui-bootstrap-0.9.0.min.js"></script>
-    <script src="scripts/popapp/app.js"></script>
-    <script src="scripts/popapp/services/storage.js"></script>
-    <script src="scripts/popapp/controllers/controllers.js"></script>
-    <!-- endbuild -->
-  </body>
+<!-- build:js productivity.js -->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/underscore/underscore.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/ngstorage/ngStorage.min.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<!--<script src="lib/doorkeeper/doorkeeper.js"></script>-->
+<!--<script src="lib/doorkeeper/oauth2.js"></script>-->
+<!--<script src="lib/doorkeeper/oauth2_finish.js"></script>-->
+<!--<script src="lib/doorkeeper/oauth2_inject.js"></script>-->
+<script type="text/javascript" src="scripts/popapp/modules/angular-underscore.min.js"></script>
+<script type="text/javascript" src="scripts/popapp/modules/ui-bootstrap-0.9.0.min.js"></script>
+
+<script src="scripts/popapp/app.js"></script>
+<script src="scripts/popapp/services/access-token.js"></script>
+<script src="scripts/popapp/services/user.js"></script>
+<script src="scripts/popapp/directives/login.js"></script>
+<script src="scripts/popapp/directives/user-profile.js"></script>
+<script src="scripts/popapp/controllers/auth_ctrl.js"></script>
+<script src="scripts/popapp/controllers/me_ctrl.js"></script>
+<script src="scripts/popapp/controllers/dashboard_ctrl.js"></script>
+<script src="scripts/popapp/routes.js"></script>
+
+<!-- endbuild -->
+</body>
 </html>

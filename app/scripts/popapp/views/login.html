@@ -1,0 +1,15 @@
+<form name="loginForm" ng-controller="AuthCtrl" ng-submit="login()">
+    <div>
+        <label for="user_email">Email</label>
+        <br>
+        <input ng-model="user.email" autofocus="autofocus" value="" name="user[email]" id="user_email" type="email">
+    </div>
+    <div>
+        <label for="user_password">Password</label>
+        <br>
+        <input ng-model="user.password" name="user[password]" id="user_password" type="password">
+    </div>
+    <div>
+        <input type="submit" id="submit" value="Sign in" class="btn btn-small btn-success"/>
+    </div>
+</form>
