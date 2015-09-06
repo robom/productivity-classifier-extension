@@ -1,5 +1,5 @@
 angular.module('public.ctrl.signIn', [])
-  .controller('AuthCtrl', ['$scope', 'User', 'AccessToken', function ($scope, User, AccessToken) {
+  .controller('AuthCtrl', ['$scope', 'User', 'AccessToken', '$rootScope', function ($scope, User, AccessToken, $rootScope) {
     $scope.user = User.new();
     var setLoggedIn;
 

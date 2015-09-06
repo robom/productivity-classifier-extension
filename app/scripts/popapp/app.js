@@ -4,7 +4,6 @@ var app;
 
 // Declare app level module which depends on filters, and services
 app = angular.module('productivity', [
-  'Devise',
   'public.ctrl.signIn',
   'ui.bootstrap',
   'angular-underscore',
