@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(
       var headers = divsText($('h1'));
       var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content")
 
-      var corpus = joinDivsText(getTextNodesIn('div'));
+      var corpus = joinDivsText(getTextNodesIn('div :visible'));
       var tfidf = analyze_web_text(corpus);
 
       var referrer = document.referrer;
@@ -20,14 +20,14 @@ chrome.runtime.onMessage.addListener(
       console.log('change 3 ' + currentUrl);
       port.postMessage({
         "message": "tab_changed_url",
-        "url": currentUrl,
+        "url": urlSanit(currentUrl),
         "tfidf": tfidf,
         "title": title,
         "headers": headers,
         "tab_id": request.tab_id,
         "previous_tab_id": request.previous_tab_id,
         "previous_url": request.previous_url,
-        "referrer ": referrer,
+        "referrer": referrer,
         "meta_description": meta_description
       });
       console.log('change 2 ' + currentUrl);
@@ -70,7 +70,7 @@ function page_info() {
     "tfidf": tfidf,
     "headers": headers,
     "meta_description": meta_description,
-    "referrer ": referrer
+    "referrer": referrer
   } );
 }
 
@@ -78,11 +78,15 @@ function current_state() {
   var currentUrl = $(location).attr('href');
   var active_length = (Date.now() - active_since) / 1000;
   return ({
-    "url": currentUrl,
+    "url": urlSanit(currentUrl),
     "up_scroll_count": up_scroll_count,
     "down_scroll_count": down_scroll_count,
     "active_length": active_length
   })
+}
+
+function urlSanit(url) {
+  return url.split("?")[0].split("#")[0];
 }
 
 function focusGained() {
