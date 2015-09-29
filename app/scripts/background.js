@@ -45,18 +45,8 @@ chrome.runtime.onConnect.addListener(function (port) {
           }, 4000);
         }
       } else if (request.message === 'lost_focus') {
-        chrome_active = false;
-
-        setTimeout(function () {
-          actual_viewing_tab(function (current_tab) {
-            if (chrome_active_switch && (!chrome_active || !current_tab || current_tab.id != sender_tab_id || urlSanit(current_tab.url) != sender_tab_url)) {
-              if (!chrome_active)
-                chrome_active_switch = false;
-              request.params['tab_id'] = sender_tab_id;
-              sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
-            }
-          });
-        }, 4000)
+        request.params['tab_id'] = sender_tab_id;
+        sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
       }
       else if (request.message === 'send_to_server') {
         request.params['tab_id'] = sender.tab.id;
@@ -132,7 +122,7 @@ function sendToServer(send_data, action) {
         request.setRequestHeader("Authorization", token());
       }
     },
-    url: 'http://localhost:3000/' + action,
+    url: 'http://localhost:3009/' + action,
     data: JSON.stringify(send_data),
     contentType: "application/json",
     processData: false,
@@ -140,7 +130,7 @@ function sendToServer(send_data, action) {
     }
   });
 
-  //$.post('http://localhost:3000/extension_api/' + action, send_data, function (data) {
+  //$.post('http://localhost:3009/extension_api/' + action, send_data, function (data) {
   //
   //});
 }

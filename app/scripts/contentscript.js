@@ -1,6 +1,8 @@
 var up_scroll_count = 0;
 var down_scroll_count = 0;
-var active_since = Date.now();
+var last_active_time = Date.now();
+var active_timer = new clsStopwatch();
+var is_active = false;
 
 var port = chrome.runtime.connect({name: "productivity_communication"});
 
@@ -76,7 +78,7 @@ function page_info() {
 
 function current_state() {
   var currentUrl = $(location).attr('href');
-  var active_length = (Date.now() - active_since) / 1000;
+  var active_length = active_timer.time() / 1000;
   return ({
     "url": urlSanit(currentUrl),
     "up_scroll_count": up_scroll_count,
@@ -90,7 +92,8 @@ function urlSanit(url) {
 }
 
 function focusGained() {
-  active_since = Date.now();
+  active_timer.start();
+  is_active = true;
   up_scroll_count = 0;
   down_scroll_count = 0;
 
@@ -101,18 +104,28 @@ function focusGained() {
 }
 
 function focusLost() {
-  var params = current_state();
-  //if (params['active_length'] >= 4) {
-    port.postMessage({
-      "message": "lost_focus",
-      "params": params
-    });
-  //}
+  is_active = false;
+  active_timer.removeAfk();
+  active_timer.stop();
+  smoothFocusLost();
+}
 
+function smoothFocusLost() {
+  setTimeout(function () {
+    sendFocusLost();
+  }, 4000);
+}
+
+function sendFocusLost() {
+  var params = current_state();
+  port.postMessage({
+    "message": "lost_focus",
+    "params": params
+  });
 }
 
 $(window).on('blur', function () {
-  console.log( 'focus out');
+  console.log('focus out');
   focusLost();
 });
 
@@ -122,13 +135,14 @@ $(window).on('unload', function () {
 
 
 $(window).on('focus', function () {
-  console.log( 'focus in');
+  console.log('focus in');
   focusGained();
 });
 
 
 var scrollPos = 0;
-$(window).scroll(function(){
+$(window).scroll(function () {
+  active_timer.removeAfk();
   var scrollPosCur = $(this).scrollTop();
   if (scrollPosCur > scrollPos) {
     down_scroll_count += 1;
@@ -136,4 +150,10 @@ $(window).scroll(function(){
     up_scroll_count += 1;
   }
   scrollPos = scrollPosCur;
-})
+  active_timer.ping();
+});
+
+$(window).keypress(function () {
+  active_timer.removeAfk();
+  active_timer.ping();
+});

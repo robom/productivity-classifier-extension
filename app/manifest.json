@@ -61,7 +61,7 @@
                 "lib/tfidf/tokenize.js",
                 "lib/tfidf/corpus_tools.js",
                 "lib/tfidf/collections_tools.js",
-                "lib/tfidf/stemmer-min.js",
+                "lib/stopwatch.js",
                 "scripts/contentscript.js"
             ],
             "run_at": "document_end",
