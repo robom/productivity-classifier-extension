@@ -132,7 +132,8 @@ $(window).on('blur', function () {
 });
 
 $(window).on('unload', function () {
-  focusLost();
+  var params = current_state();
+  sendFocusLost(params);
 });
 
 
