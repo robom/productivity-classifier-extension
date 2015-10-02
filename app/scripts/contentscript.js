@@ -160,7 +160,7 @@ $(window).keypress(function () {
 });
 
 if (document.hasFocus()) {
-  sendNewPageData();
+  focusGained();
 }else{
   if (!top_words) {
     var corpus = joinDivsText(getTextNodesIn('div :visible'));
