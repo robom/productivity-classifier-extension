@@ -132,8 +132,10 @@ $(window).on('blur', function () {
 });
 
 $(window).on('unload', function () {
-  var params = current_state();
-  sendFocusLost(params);
+  if (sent_description) {
+    var params = current_state();
+    sendFocusLost(params);
+  }
 });
 
 
@@ -162,7 +164,7 @@ $(window).keypress(function () {
 
 if (document.hasFocus()) {
   focusGained();
-}else{
+} else {
   if (!top_words) {
     var corpus = joinDivsText(getTextNodesIn('div :visible'));
     top_words = analyze_web_text(corpus);
