@@ -1,10 +1,8 @@
 var current_id = -1;
 var current_urls = {};
-var current_url = '';
 var tab_change = false;
 var chrome_active = false;
-var chrome_active_switch = false;
-
+var previous_tab_id = null;
 var port = chrome.runtime.connect({name: "productivity_communication"});
 
 //New tab and changes within tab url
@@ -27,29 +25,21 @@ chrome.runtime.onConnect.addListener(function (port) {
       var sender_tab_url = urlSanit(sender.tab.url);
 
       if (request.message === "tab_changed_url") {
-        if (!tab_change) {
-          current_url = urlSanit(request.url);
-          tab_change = true;
-          sendToServer(request, 'extension_api/active_pages/new_page.json')
-        }
+        request["tab_id"] = sender_tab_id;
+        sendToServer(request, 'extension_api/active_pages/new_page.json')
       } else if (request.message === 'active_status') {
-        if (request.active && !chrome_active) {
-          chrome_active = true;
-          setTimeout(function () {
-            actual_viewing_tab(function (current_tab) {
-              if (!chrome_active_switch && chrome_active && current_tab && current_tab.id === sender_tab_id && urlSanit(current_tab.url) == sender_tab_url) {
-                chrome_active_switch = true;
-                sendToServer({'tab_id': sender.tab.id}, 'extension_api/active_pages/chrome_activated.json');
-              }
-            });
-          }, 4000);
-        }
-      } else if (request.message === 'lost_focus') {
+        sendToServer({
+          'tab_id': sender_tab_id,
+          'previous_tab_id': previous_tab_id
+        }, 'extension_api/active_pages/tab_change.json');
+        previous_tab_id = sender_tab_id;
+      }
+      else if (request.message === 'lost_focus') {
         request.params['tab_id'] = sender_tab_id;
         sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
       }
       else if (request.message === 'send_to_server') {
-        request.params['tab_id'] = sender.tab.id;
+        request.params['tab_id'] = sender_tab_id;
         sendToServer(request.params, 'extension_api/' + request.action)
       }
 
@@ -68,42 +58,32 @@ function urlSanit(url) {
   return url.split("?")[0].split("#")[0];
 }
 
-// notify content script url has changed
-function notifyTabChanged() {
-//     Send a message to the active tab
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-    if (tabs[0] && current_urls[tabs[0].id] != urlSanit(tabs[0].url)) {
-      var activeTab_id = tabs[0].id;
-      var activeTab_url = urlSanit(tabs[0].url);
-      chrome_active_switch = true;
-
-      setTimeout(function () {
-        actual_viewing_tab(function (current_tab) {
-          //console.log(current_tab);
-          if (current_tab && current_tab.id === activeTab_id && urlSanit(current_tab.url) == activeTab_url) {
-
-            if (current_id != activeTab_id && current_urls[activeTab_id] == activeTab_url) {
-              sendToServer({tab_id: activeTab_id}, 'extension_api/active_pages/tab_change');
-              current_url = activeTab_url;
-              tab_change = true;
-            } else {
-              tab_change = false;
-              chrome.tabs.sendMessage(activeTab_id, {
-                "message": "tab_changed",
-                "tab_id": activeTab_id,
-                "previous_tab_id": current_id,
-                "previous_url": current_url
-              });
-            }
-            //console.log(activeTab_id);
-            current_id = activeTab_id;
-            current_urls[activeTab_id] = activeTab_url;
-          }
-        });
-      }, 4000);
-    }
-  });
-}
+//// notify content script url has changed
+//function notifyTabChanged() {
+////     Send a message to the active tab
+//  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+//    if (tabs[0] && current_urls[tabs[0].id] != urlSanit(tabs[0].url)) {
+//      var activeTab_id = tabs[0].id;
+//      var activeTab_url = urlSanit(tabs[0].url);
+//
+//      if (current_urls[activeTab_id] == activeTab_url) {
+//        console.log('tab change');
+//        tab_change = true;
+//      } else {
+//        console.log('new page');
+//        tab_change = false;
+//        chrome.tabs.sendMessage(activeTab_id, {
+//          "message": "tab_changed",
+//          "tab_id": activeTab_id,
+//          "previous_tab_id": current_id,
+//        });
+//      }
+//      //console.log(activeTab_id);
+//      current_id = activeTab_id;
+//      current_urls[activeTab_id] = activeTab_url;
+//    }
+//  });
+//}
 
 function token() {
   if (localStorage['ngStorage-token']) {

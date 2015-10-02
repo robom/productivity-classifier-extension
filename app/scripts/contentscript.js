@@ -1,47 +1,48 @@
 var up_scroll_count = 0;
 var down_scroll_count = 0;
-var last_active_time = Date.now();
 var active_timer = new clsStopwatch();
+active_timer.start();
 var is_active = false;
+var is_fully_active = false;
+var top_words = null;
+var sent_description = false;
 
 var port = chrome.runtime.connect({name: "productivity_communication"});
 
 chrome.runtime.onMessage.addListener(
   function (request) {
-    var currentUrl = $(location).attr('href');
-    if (request.message === "tab_changed" && currentUrl != request.previous_url) {
-      var title = $(document).find("title").text();
-      var headers = divsText($('h1'));
-      var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content")
-
-      var corpus = joinDivsText(getTextNodesIn('div :visible'));
-      var tfidf = analyze_web_text(corpus);
-
-      var referrer = document.referrer;
-
-      console.log('change 3 ' + currentUrl);
-      port.postMessage({
-        "message": "tab_changed_url",
-        "url": urlSanit(currentUrl),
-        "tfidf": tfidf,
-        "title": title,
-        "headers": headers,
-        "tab_id": request.tab_id,
-        "previous_tab_id": request.previous_tab_id,
-        "previous_url": request.previous_url,
-        "referrer": referrer,
-        "meta_description": meta_description
-      });
-      console.log('change 2 ' + currentUrl);
-
-    } else if (request.message === 'active_status') {
-      port.postMessage({
-        message: 'active_status',
-        active: document.hasFocus()
-      });
-    }
+    //var currentUrl = $(location).attr('href');
+    //if (request.message === "tab_changed") {
+    //
+    //}
   }
 );
+
+function sendNewPageData() {
+  var currentUrl = $(location).attr('href');
+  var title = $(document).find("title").text();
+  var headers = divsText($('h1'));
+  var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content");
+
+  if (!top_words) {
+    var corpus = joinDivsText(getTextNodesIn('div :visible'));
+    top_words = analyze_web_text(corpus);
+  }
+
+  var referrer = document.referrer;
+  console.log('tab_changed_url');
+  port.postMessage({
+    "message": "tab_changed_url",
+    "url": urlSanit(currentUrl),
+    "tfidf": top_words,
+    "title": title,
+    "headers": headers,
+    "referrer": referrer,
+    "meta_description": meta_description
+  });
+  sent_description = true;
+}
+
 
 function joinDivsText(divs) {
   return divsText(divs).join(" ");
@@ -54,26 +55,6 @@ function divsText(divs) {
       return $(element).text()
     }
   );
-}
-
-
-function page_info() {
-  var title = $(document).find("title").text();
-  var headers = joinDivsText($('h1'));
-  var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content")
-
-  var corpus = joinDivsText(getTextNodesIn('div'));
-  var tfidf = analyze_web_text(corpus);
-
-  var referrer = document.referrer;
-
-  return ( {
-    "title": title,
-    "tfidf": tfidf,
-    "headers": headers,
-    "meta_description": meta_description,
-    "referrer": referrer
-  } );
 }
 
 function current_state() {
@@ -94,10 +75,26 @@ function urlSanit(url) {
 function focusGained() {
   active_timer.start();
   is_active = true;
-  up_scroll_count = 0;
-  down_scroll_count = 0;
+  smoothFocusGain();
+}
 
+function smoothFocusGain() {
+  setTimeout(function () {
+    if (is_active && !is_fully_active) {
+      is_fully_active = true;
+      if (sent_description) {
+        sendFocusGained();
+      } else {
+        sendNewPageData();
+      }
+    }
+  }, 4000);
+}
+
+function sendFocusGained() {
+  //var currentUrl = $(location).attr('href');
   port.postMessage({
+    //url: urlSanit(currentUrl),
     message: 'active_status',
     active: true
   });
@@ -106,18 +103,24 @@ function focusGained() {
 function focusLost() {
   is_active = false;
   active_timer.removeAfk();
+  var params = current_state();
+  smoothFocusLost(params);
   active_timer.stop();
-  smoothFocusLost();
 }
 
-function smoothFocusLost() {
+function smoothFocusLost(params) {
   setTimeout(function () {
-    sendFocusLost();
+    if (!is_active && is_fully_active) {
+      is_fully_active = false;
+      sendFocusLost(params);
+      up_scroll_count = 0;
+      down_scroll_count = 0;
+      active_timer.reset();
+    }
   }, 4000);
 }
 
-function sendFocusLost() {
-  var params = current_state();
+function sendFocusLost(params) {
   port.postMessage({
     "message": "lost_focus",
     "params": params
@@ -125,7 +128,6 @@ function sendFocusLost() {
 }
 
 $(window).on('blur', function () {
-  console.log('focus out');
   focusLost();
 });
 
@@ -135,7 +137,6 @@ $(window).on('unload', function () {
 
 
 $(window).on('focus', function () {
-  console.log('focus in');
   focusGained();
 });
 
@@ -157,3 +158,13 @@ $(window).keypress(function () {
   active_timer.removeAfk();
   active_timer.ping();
 });
+
+if (document.hasFocus()) {
+  sendNewPageData();
+}else{
+  if (!top_words) {
+    var corpus = joinDivsText(getTextNodesIn('div :visible'));
+    top_words = analyze_web_text(corpus);
+  }
+}
+

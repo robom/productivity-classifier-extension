@@ -50,7 +50,7 @@ var clsStopwatch = function () {
   };
 
   this.removeAfk = function (time) {
-    if (startAt && now() - last_active_time > 120000) {
+    if (startAt && now() - lastActiveTime > 120000) {
       lapTime = startAt ? lapTime + (time - startAt) + 120000 : lapTime;
       startAt = now();
     }
