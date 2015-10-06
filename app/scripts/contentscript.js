@@ -1,5 +1,6 @@
 var up_scroll_count = 0;
 var down_scroll_count = 0;
+var key_pressed = 0;
 var active_timer = new clsStopwatch();
 active_timer.start();
 var is_active = false;
@@ -64,7 +65,8 @@ function current_state() {
     "url": urlSanit(currentUrl),
     "up_scroll_count": up_scroll_count,
     "down_scroll_count": down_scroll_count,
-    "active_length": active_length
+    "active_length": active_length,
+    "key_pressed": key_pressed
   })
 }
 
@@ -115,6 +117,7 @@ function smoothFocusLost(params) {
       sendFocusLost(params);
       up_scroll_count = 0;
       down_scroll_count = 0;
+      key_pressed = 0;
       active_timer.reset();
     }
   }, 4000);
@@ -160,6 +163,7 @@ $(window).scroll(function () {
 $(window).keypress(function () {
   active_timer.removeAfk();
   active_timer.ping();
+  key_pressed += 1
 });
 
 if (document.hasFocus()) {

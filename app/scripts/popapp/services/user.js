@@ -3,7 +3,6 @@ angular.module('productivity')
     var base;
     base = RAILS.HOST + "/extension_api/user";
     var auth_base = RAILS.HOST + "/oauth/";
-    var auth = RAILS.HOST + "/oauth/authorize?response_type=code&client_id=" + RAILS.APPLICATION_ID
 
     return {
       all: function () {

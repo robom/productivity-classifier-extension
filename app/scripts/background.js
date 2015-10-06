@@ -5,16 +5,16 @@ var chrome_active = false;
 var previous_tab_id = null;
 var port = chrome.runtime.connect({name: "productivity_communication"});
 
-//New tab and changes within tab url
-chrome.tabs.onUpdated.addListener(function () {
-  notifyTabChanged()
-});
-
-// Switching tabs
-chrome.tabs.onActivated.addListener(function () {
-  // Send a message to the active tab
-  notifyTabChanged()
-});
+////New tab and changes within tab url
+//chrome.tabs.onUpdated.addListener(function () {
+//  notifyTabChanged()
+//});
+//
+//// Switching tabs
+//chrome.tabs.onActivated.addListener(function () {
+//  // Send a message to the active tab
+//  notifyTabChanged()
+//});
 
 // Listener for messages
 chrome.runtime.onConnect.addListener(function (port) {
