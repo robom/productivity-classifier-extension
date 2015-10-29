@@ -37,6 +37,7 @@ function sendNewPageData() {
     "url": urlSanit(currentUrl),
     "tfidf": top_words,
     "title": title,
+    "app_type": 'chrome',
     "headers": headers,
     "referrer": referrer,
     "meta_description": meta_description
