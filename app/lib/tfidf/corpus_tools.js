@@ -10,15 +10,15 @@ jQuery.fn.exists = function () {
 // pass in an element
 // eg: var corpus  = getTextNodesIn('div').text();
 var getTextNodesIn = function (el) {
-  var texts = $(el).find(":not(iframe)").andSelf().contents().filter(function () {
+  var texts = $(el).contents().filter(function () {
     return this.nodeType == 3;
   });
-  if (texts.length < 5){
-    texts = $(el).find(":not(iframe)").andSelf().contents().filter(function () {
+  //if (texts.length < 5){
+  var node_texts = $(el).contents().filter(function () {
       return this.nodeType == 1;
     });
-  }
-  return texts
+  //}
+  return $.merge(texts, node_texts)
 };
 
 var accentsTidy = function (s) {
@@ -51,9 +51,9 @@ var prepare_doc = function (document_string) {
 
   // remove numbers & stem
   // tokens = _.map(tokens, function(wd){ return stemmer(accentsTidy(wd).replace(/\d+/g, '')); });
-  tokens = _.map(tokens, function (wd) {
-    return wd.replace(/\d+/g, '');
-  });
+  //tokens = _.map(tokens, function (wd) {
+  //  return wd.replace(/\d+/g, '');
+  //});
   //console.log(tokens)
 
   // remove words that are too long

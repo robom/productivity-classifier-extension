@@ -26,12 +26,11 @@ function sendNewPageData() {
   var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content");
 
   if (!top_words) {
-    var corpus = joinDivsText(getTextNodesIn('div :visible'));
+    var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
     top_words = analyze_web_text(corpus);
   }
 
   var referrer = document.referrer;
-  console.log('tab_changed_url');
   port.postMessage({
     "message": "tab_changed_url",
     "url": urlSanit(currentUrl),
@@ -171,7 +170,7 @@ if (document.hasFocus()) {
   focusGained();
 } else {
   if (!top_words) {
-    var corpus = joinDivsText(getTextNodesIn('div :visible'));
+    var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
     top_words = analyze_web_text(corpus);
   }
 }
