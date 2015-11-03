@@ -27,7 +27,7 @@ var remove_punctuations = function (s) {
 var tokenize = function (str) {
   new_str = str.replace(/\d+/g, '');
   tokens = remove_punctuations(fulltrim(new_str)).split(/([a-zA-Z\u00C0-\u017F]+|\s[a-zA-Z\u00C0-\u017F]+|\!|\'|\"")/i);
-
+  tokens = $(tokens).slice(5000);
   tokens2 = _.map(tokens, function (wd) {
     return fulltrim(wd)
   });
