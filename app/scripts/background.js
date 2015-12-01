@@ -102,7 +102,7 @@ function sendToServer(send_data, action) {
         request.setRequestHeader("Authorization", token());
       }
     },
-    url: 'http://localhost:3009/' + action,
+    url: 'http://vnenk.com/' + action,
     data: JSON.stringify(send_data),
     contentType: "application/json",
     processData: false,
@@ -110,7 +110,7 @@ function sendToServer(send_data, action) {
     }
   });
 
-  //$.post('http://localhost:3009/extension_api/' + action, send_data, function (data) {
+  //$.post('http://vnenk.com/extension_api/' + action, send_data, function (data) {
   //
   //});
 }

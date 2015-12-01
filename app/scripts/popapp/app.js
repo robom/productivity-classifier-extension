@@ -12,9 +12,9 @@ app = angular.module('productivity', [
 ]);
 
 app.constant('RAILS', {
-  'HOST': 'http://localhost:3009',
+  'HOST': 'http://vnenk.com',
   'APPLICATION_ID': '9516050e34caa1a21b121ff547d34732a99145cadd9ac95d9a37fe4153e2d17a',
-  'REDIRECT_URI': 'http://localhost:3009/robots.txt'
+  'REDIRECT_URI': 'http://vnenk.com/robots.txt'
 });
 
 app.config(['$httpProvider', function ($httpProvider) {
