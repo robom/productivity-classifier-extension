@@ -53,7 +53,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Project name</a>
+                <a class="navbar-brand" href="#">Stay Productive</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -77,10 +77,10 @@
                     <!--<li><a href="../navbar/">Default</a></li>-->
                     <!--<li><a href="../navbar-static-top/">Static top</a></li>-->
                     <!--<li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>-->
-                    <li ui-sref-active="active"><a href="#" ui-sref="dashboard">Dashboard</a></li>
-                    <li ui-sref-active="active"><a href="#" ui-sref="experiment">Experiment</a></li>
+                    <li ui-sref-active="active"><a ui-sref="dashboard">Dashboard</a></li>
+                    <li ui-sref-active="active"><a ui-sref="experiment">Experiment</a></li>
                     <li ng-controller="AuthCtrl">
-                        <a href="#" ng-click="logout()" ng-show="loggedIn" type="button">Logout</a>
+                        <a ui-sref="login" ng-click="logout()" ng-show="loggedIn" type="button">Logout</a>
                     </li>
                 </ul>
             </div><!--/.nav-collapse -->

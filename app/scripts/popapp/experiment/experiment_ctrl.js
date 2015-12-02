@@ -3,14 +3,14 @@ angular.module('productivity')
     $scope.welcomeMsg = "This is your first chrome extension";
 
     $scope.in_work = function () {
-      var url = RAILS.HOST + "/extension_api/experiments/in_work";
+      var url = RAILS.HOST + "/extension_api/experiments/in_work.json";
       $http.post(url, {}).success(function () {
         $scope.experiment_complete = true;
       });
     };
 
     $scope.not_in_work = function () {
-      var url = RAILS.HOST + "/extension_api/experiments/not_in_work";
+      var url = RAILS.HOST + "/extension_api/experiments/not_in_work.json";
       $http.post(url, {}).success(function () {
         $scope.experiment_complete = true;
       });

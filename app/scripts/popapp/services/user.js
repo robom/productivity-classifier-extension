@@ -11,13 +11,13 @@ angular.module('productivity')
       me: function () {
         return $http.get(base + '/profile');
       },
-      logout: function () {
-        return $http["delete"](base + '/logout');
+      logout: function (token) {
+        return $http.post(auth_base + 'revoke', {token: token});
       },
       new: function () {
         return {
-          'email': 'lubosch@zoho.com',
-          'password': 'aassdd',
+          'email': '',
+          'password': '',
           'grant_type': 'password'
         }
       },
