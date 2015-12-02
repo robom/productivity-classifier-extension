@@ -8,6 +8,7 @@ app = angular.module('productivity', [
   'ui.bootstrap',
   'angular-underscore',
   'ngStorage',
+  'mgcrea.ngStrap',
   'ui.router'
 ]);
 

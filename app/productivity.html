@@ -10,50 +10,103 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <!-- endbuild -->
     <title>Productivity Extension</title>
+
+    <!-- build:js productivity.js -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-strap/dist/angular-strap.min.js"></script>
+    <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>
+    <script src="bower_components/ngstorage/ngStorage.min.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <!--<script src="lib/doorkeeper/doorkeeper.js"></script>-->
+    <!--<script src="lib/doorkeeper/oauth2.js"></script>-->
+    <!--<script src="lib/doorkeeper/oauth2_finish.js"></script>-->
+    <!--<script src="lib/doorkeeper/oauth2_inject.js"></script>-->
+    <script type="text/javascript" src="scripts/popapp/modules/angular-underscore.min.js"></script>
+    <script type="text/javascript" src="scripts/popapp/modules/ui-bootstrap-0.9.0.min.js"></script>
+
+    <script src="scripts/popapp/app.js"></script>
+    <script src="scripts/popapp/services/access-token.js"></script>
+    <script src="scripts/popapp/services/user.js"></script>
+    <script src="scripts/popapp/directives/login.js"></script>
+    <script src="scripts/popapp/directives/user-profile.js"></script>
+    <script src="scripts/popapp/controllers/auth_ctrl.js"></script>
+    <script src="scripts/popapp/controllers/me_ctrl.js"></script>
+    <script src="scripts/popapp/controllers/dashboard_ctrl.js"></script>
+    <script src="scripts/popapp/experiment/experiment_ctrl.js"></script>
+    <script src="scripts/popapp/routes.js"></script>
+
 </head>
 
 <body ng-app="productivity">
 
+<div id="wrapper">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Project name</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <!--<li class="active"><a href="#">Home</a></li>-->
+                    <!--<li><a href="#about">About</a></li>-->
+                    <!--<li><a href="#contact">Contact</a></li>-->
+                    <!--<li class="dropdown">-->
+                        <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>-->
+                        <!--<ul class="dropdown-menu">-->
+                            <!--<li><a href="#">Action</a></li>-->
+                            <!--<li><a href="#">Another action</a></li>-->
+                            <!--<li><a href="#">Something else here</a></li>-->
+                            <!--<li role="separator" class="divider"></li>-->
+                            <!--<li class="dropdown-header">Nav header</li>-->
+                            <!--<li><a href="#">Separated link</a></li>-->
+                            <!--<li><a href="#">One more separated link</a></li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <!--<li><a href="../navbar/">Default</a></li>-->
+                    <!--<li><a href="../navbar-static-top/">Static top</a></li>-->
+                    <!--<li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>-->
+                    <li ui-sref-active="active"><a href="#" ui-sref="dashboard">Dashboard</a></li>
+                    <li ui-sref-active="active"><a href="#" ui-sref="experiment">Experiment</a></li>
+                    <li ng-controller="AuthCtrl">
+                        <a href="#" ng-click="logout()" ng-show="loggedIn" type="button">Logout</a>
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+</div>
+
 <!--<div ng-controller="MainController">-->
-    <header class="header">
-        <nav class="header__nav">
-            <ul class="nav">
-                <li class="nav__item">
-                    <a ui-sref="me">Me (protected)</a>
-                </li>
-            </ul>
-        </nav>
-        <div ui-view></div>
-        <div class="header__oauth" ng-include="'/scripts/popapp/views/oauth.html'"></div>
-    </header>
-    <!--<div login-directive></div>-->
-    <!--<div user-profile></div>-->
+<!--<header class="header">-->
+<!--<nav class="header__nav">-->
+<!--<ul class="nav">-->
+<!--<li class="nav__item">-->
+<!--<a ui-sref="me">Me (protected)</a>-->
+<!--</li>-->
+<!--</ul>-->
+<!--</nav>-->
+<!--<div ui-view></div>-->
+<!--<div class="header__oauth" ng-include="'/scripts/popapp/views/oauth.html'"></div>-->
+<!--</header>-->
+<!--<div login-directive></div>-->
+<!--<div user-profile></div>-->
 <!--</div>-->
 
-<!-- build:js productivity.js -->
-<script src="bower_components/jquery/dist/jquery.min.js"></script>
-<script src="bower_components/underscore/underscore.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/ngstorage/ngStorage.min.js"></script>
-<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-<!--<script src="lib/doorkeeper/doorkeeper.js"></script>-->
-<!--<script src="lib/doorkeeper/oauth2.js"></script>-->
-<!--<script src="lib/doorkeeper/oauth2_finish.js"></script>-->
-<!--<script src="lib/doorkeeper/oauth2_inject.js"></script>-->
-<script type="text/javascript" src="scripts/popapp/modules/angular-underscore.min.js"></script>
-<script type="text/javascript" src="scripts/popapp/modules/ui-bootstrap-0.9.0.min.js"></script>
-
-<script src="scripts/popapp/app.js"></script>
-<script src="scripts/popapp/services/access-token.js"></script>
-<script src="scripts/popapp/services/user.js"></script>
-<script src="scripts/popapp/directives/login.js"></script>
-<script src="scripts/popapp/directives/user-profile.js"></script>
-<script src="scripts/popapp/controllers/auth_ctrl.js"></script>
-<script src="scripts/popapp/controllers/me_ctrl.js"></script>
-<script src="scripts/popapp/controllers/dashboard_ctrl.js"></script>
-<script src="scripts/popapp/routes.js"></script>
-
 <!-- endbuild -->
+
+<div ui-view></div>
+
 </body>
 </html>

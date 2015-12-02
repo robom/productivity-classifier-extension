@@ -3,22 +3,31 @@ angular.module('productivity')
     $urlRouterProvider.otherwise(function () {
       return '/'
     });
+
     $stateProvider.state('index', {
       url: '/',
       controller: function ($state, AccessToken) {
         if (AccessToken.get()) {
-          return $state.go('index');
+          return $state.go('experiment');
         }else{
           return $state.go('login');
         }
       },
       templateUrl: '/scripts/popapp/views/index.html'
     });
+
     $stateProvider.state('dashboard', {
       url: '/dashboard',
       controller: 'DashboardCtrl',
       templateUrl: '/scripts/popapp/views/index.html'
     });
+
+    $stateProvider.state('experiment', {
+      url: '/experiment',
+      controller: 'ExperimentCtrl',
+      templateUrl: '/scripts/popapp/experiment/experiment.html'
+    });
+
     $stateProvider.state('me', {
       url: '/me',
       controller: 'MeCtrl',
