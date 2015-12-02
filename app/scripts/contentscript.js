@@ -27,7 +27,7 @@ function sendNewPageData() {
 
   if (!top_words) {
     var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
-    top_words = analyze_web_text(corpus);
+    top_words = analyze_web_text(corpus.substring(0,100000));
   }
 
   var referrer = document.referrer;
