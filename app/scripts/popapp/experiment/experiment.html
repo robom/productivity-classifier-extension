@@ -2,6 +2,9 @@
     Experiment
 </h1>
 <div>
+    You have already earned {{beers_count || get_beers_count() | number:2}} beers. <a href="{{experiment_link}}" target="_blank">I want more</a>
+</div>
+<div>
     <button class="btn btn-success" ng-click="in_work()">I am in work</button>
     <button class="btn btn-warning" ng-click="not_in_work()">I am not in work</button>
 </div>

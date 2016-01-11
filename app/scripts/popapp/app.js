@@ -14,6 +14,7 @@ app = angular.module('productivity', [
 
 app.constant('RAILS', {
   'HOST': 'http://vnenk.com',
+  //'HOST': 'http://localhost:3000',
   'APPLICATION_ID': '9516050e34caa1a21b121ff547d34732a99145cadd9ac95d9a37fe4153e2d17a',
   'REDIRECT_URI': 'http://vnenk.com/robots.txt'
 });
