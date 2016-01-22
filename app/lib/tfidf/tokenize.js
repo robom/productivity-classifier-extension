@@ -25,14 +25,14 @@ var remove_punctuations = function (s) {
 
 
 var tokenize = function (str) {
-  new_str = str.replace(/\d+/g, '');
-  tokens = remove_punctuations(fulltrim(new_str)).split(/([a-zA-Z\u00C0-\u017F]+|\s[a-zA-Z\u00C0-\u017F]+|\!|\'|\"")/i);
-  tokens = $(tokens).slice(5000);
-  tokens2 = _.map(tokens, function (wd) {
-    return fulltrim(wd)
-  });
-  tokens2 = _.filter(tokens2, function (wd) {
+  var new_str = str.replace(/\d+/g, '');
+  var tokens = remove_punctuations(fulltrim(new_str)).split(/([a-zA-Z\u00C0-\u017F]+|\s[a-zA-Z\u00C0-\u017F]+|\!|\'|\"")/i);
+  var tokens2 = _.filter(tokens, function (wd) {
     return (wd != "" && wd != " ");
   });
+  tokens2 = tokens2.slice(0, 5000);
+  tokens2 = _.map(tokens2, function (wd) {
+    return fulltrim(wd)
+  });
   return tokens2;
-}
+};

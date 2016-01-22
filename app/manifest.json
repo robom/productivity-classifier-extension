@@ -1,6 +1,6 @@
 {
     "name": "Productivity Extension",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
@@ -26,15 +26,10 @@
     "permissions": [
         "http://*/*",
         "https://*/*",
-        "contextMenus",
         "storage",
         "notifications",
-        "clipboardRead",
-        "clipboardWrite",
         "tabs",
-        "<all_urls>",
-        "alarms",
-        "identity"
+        "<all_urls>"
     ],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "web_accessible_resources": [

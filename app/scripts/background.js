@@ -103,6 +103,7 @@ function sendToServer(send_data, action) {
       }
     },
     url: 'http://vnenk.com/' + action,
+    //url: 'http://localhost:3000/' + action,
     data: JSON.stringify(send_data),
     contentType: "application/json",
     processData: false,
@@ -110,9 +111,6 @@ function sendToServer(send_data, action) {
     }
   });
 
-  //$.post('http://vnenk.com/extension_api/' + action, send_data, function (data) {
-  //
-  //});
 }
 
 //chrome.alarms.create('active-window', {'periodInMinutes': 0.1});
