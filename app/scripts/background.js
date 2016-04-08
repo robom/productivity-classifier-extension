@@ -20,29 +20,34 @@ var port = chrome.runtime.connect({name: "productivity_communication"});
 chrome.runtime.onConnect.addListener(function (port) {
   port.onMessage.addListener(function (request, sender) {
       var sender = sender.sender;
-      console.log(request);
+      //console.log(request);
       var sender_tab_id = sender.tab.id;
       var sender_tab_url = urlSanit(sender.tab.url);
 
       if (request.message === "tab_changed_url") {
         request["tab_id"] = sender_tab_id;
-        sendToServer(request, 'extension_api/active_pages/new_page.json')
+        //sendToServer(request, 'extension_api/active_pages/new_page.json')
+        sendToUxr(request);
       } else if (request.message === 'active_status') {
-        sendToServer({
-          'tab_id': sender_tab_id,
-          'previous_tab_id': previous_tab_id
-        }, 'extension_api/active_pages/tab_change.json');
-        previous_tab_id = sender_tab_id;
+          request["tab_id"] = sender_tab_id;
+          request["previous_tab_id"] = previous_tab_id;
+        //sendToServer({
+        //  'tab_id': sender_tab_id,
+        //  'previous_tab_id': previous_tab_id
+        //}, 'extension_api/active_pages/tab_change.json');
+          sendToUxr(request);
+          previous_tab_id = sender_tab_id;
       }
       else if (request.message === 'lost_focus') {
         request.params['tab_id'] = sender_tab_id;
-        sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
+        //sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
+        sendToUxr(request);
       }
       else if (request.message === 'send_to_server') {
         request.params['tab_id'] = sender_tab_id;
-        sendToServer(request.params, 'extension_api/' + request.action)
-      }
-
+        //sendToServer(request.params, 'extension_api/' + request.action)
+        sendToUxr(request);
+      }     
     }
   )
   ;
@@ -111,6 +116,31 @@ function sendToServer(send_data, action) {
     }
   });
 
+}
+
+function sendToUxr(data) {
+  if (data === null)
+    return;
+  
+  console.log(data);
+  console.log(JSON.stringify(data));
+  
+	$.ajax({
+		type : "POST",
+		url : "http://localhost:55555/api/UXS/SendEvent",
+		data : {
+			"Token" : "ASQ-br0wseR_30126",
+			"Value" : JSON.stringify(data),
+			"ValidFrom" : new Date().toISOString() 
+		},
+		dataType : 'json',
+		success : function(response) {
+			console.log(response);
+		},
+		error : function(error) {
+			console.log(error.statusText);
+		}
+	});
 }
 
 //chrome.alarms.create('active-window', {'periodInMinutes': 0.1});
