@@ -1,3 +1,5 @@
+var DEBUG = false;
+
 var current_id = -1;
 var current_urls = {};
 var tab_change = false;
@@ -20,7 +22,7 @@ var port = chrome.runtime.connect({name: "productivity_communication"});
 chrome.runtime.onConnect.addListener(function (port) {
   port.onMessage.addListener(function (request, sender) {
       var sender = sender.sender;
-      //console.log(request);
+      DEBUG && console.log(request);
       var sender_tab_id = sender.tab.id;
       var sender_tab_url = urlSanit(sender.tab.url);
 
@@ -38,7 +40,7 @@ chrome.runtime.onConnect.addListener(function (port) {
           sendToUxr(request);
           previous_tab_id = sender_tab_id;
       }
-      else if (request.message === 'lost_focus') {
+      else if (request.message === 'lost_focus' || request.message === 'unload') {
         request.params['tab_id'] = sender_tab_id;
         //sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
         sendToUxr(request);
@@ -60,7 +62,8 @@ function actual_viewing_tab(callback) {
 }
 
 function urlSanit(url) {
-  return url.split("?")[0].split("#")[0];
+  // return url.split("?")[0].split("#")[0];
+  return url;  
 }
 
 //// notify content script url has changed
@@ -122,8 +125,10 @@ function sendToUxr(data) {
   if (data === null)
     return;
   
-  console.log(data);
-  console.log(JSON.stringify(data));
+    DEBUG && console.log('----------- SENDING TO UXR ------------------');
+    DEBUG && console.log(data);
+    DEBUG && console.log(JSON.stringify(data));
+    DEBUG && console.log('^^^^^^^^^^^ SENDING TO UXR ^^^^^^^^^^^^^^^^^^');
   
 	$.ajax({
 		type : "POST",
@@ -135,10 +140,10 @@ function sendToUxr(data) {
 		},
 		dataType : 'json',
 		success : function(response) {
-			console.log(response);
+			DEBUG && console.log(response);
 		},
 		error : function(error) {
-			console.log(error.statusText);
+			DEBUG && console.log(error.statusText);
 		}
 	});
 }

@@ -22,22 +22,22 @@ chrome.runtime.onMessage.addListener(
 function sendNewPageData() {
   var currentUrl = $(location).attr('href');
   var title = $(document).find("title").text();
-  var headers = divsText($('h1'));
+  // var headers = divsText($('h1'));
   var meta_description = $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content");
 
-  if (!top_words) {
-    var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
-    top_words = analyze_web_text(corpus.substring(0,100000));
-  }
+  // if (!top_words) {
+  //   var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
+  //   top_words = analyze_web_text(corpus.substring(0,100000));
+  // }
 
   var referrer = document.referrer;
   port.postMessage({
     "message": "tab_changed_url",
     "url": urlSanit(currentUrl),
-    "tfidf": top_words,
+    // "tfidf": top_words,
     "title": title,
     "app_type": 'chrome',
-    "headers": headers,
+    // "headers": headers,
     "referrer": referrer,
     "meta_description": meta_description
   });
@@ -71,7 +71,8 @@ function current_state() {
 }
 
 function urlSanit(url) {
-  return url.split("?")[0].split("#")[0];
+  // return url.split("?")[0].split("#")[0];
+  return url;
 }
 
 function focusGained() {
@@ -81,7 +82,6 @@ function focusGained() {
 }
 
 function smoothFocusGain() {
-  setTimeout(function () {
     if (is_active && !is_fully_active) {
       is_fully_active = true;
       if (sent_description) {
@@ -90,15 +90,14 @@ function smoothFocusGain() {
         sendNewPageData();
       }
     }
-  }, 4000);
 }
 
 function sendFocusGained() {
-  //var currentUrl = $(location).attr('href');
+  var currentUrl = $(location).attr('href');
   port.postMessage({
-    //url: urlSanit(currentUrl),
     message: 'active_status',
-    active: true
+    active: true,
+    url: urlSanit(currentUrl)
   });
 }
 
@@ -111,7 +110,6 @@ function focusLost() {
 }
 
 function smoothFocusLost(params) {
-  setTimeout(function () {
     if (!is_active && is_fully_active) {
       is_fully_active = false;
       sendFocusLost(params);
@@ -120,7 +118,6 @@ function smoothFocusLost(params) {
       key_pressed = 0;
       active_timer.reset();
     }
-  }, 4000);
 }
 
 function sendFocusLost(params) {
@@ -130,6 +127,13 @@ function sendFocusLost(params) {
   });
 }
 
+function sendUnload(params) {
+    port.postMessage({
+       "message": "unload",
+       "params": params
+    });
+}
+
 $(window).on('blur', function () {
   focusLost();
 });
@@ -137,7 +141,7 @@ $(window).on('blur', function () {
 $(window).on('unload', function () {
   if (sent_description) {
     var params = current_state();
-    sendFocusLost(params);
+    sendUnload(params);
   }
 });
 
@@ -169,9 +173,9 @@ $(window).keypress(function () {
 if (document.hasFocus()) {
   focusGained();
 } else {
-  if (!top_words) {
-    var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
-    top_words = analyze_web_text(corpus);
-  }
+  // if (!top_words) {
+  //   var corpus = joinDivsText(getTextNodesIn('div:visible:not(iframe):not(script) :visible:not(iframe):not(script)'));
+  //   top_words = analyze_web_text(corpus);
+  // }
 }
 
