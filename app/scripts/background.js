@@ -1,11 +1,15 @@
 var DEBUG = false;
 
+var tokens = {};
+tokens.asq_browser_token = "ASQ-br0wseR_30126";
+tokens.asq_aoi_token = "ASQ-a01_30126";
+
 var current_id = -1;
 var current_urls = {};
 var tab_change = false;
 var chrome_active = false;
 var previous_tab_id = null;
-var port = chrome.runtime.connect({name: "productivity_communication"});
+var port = chrome.runtime.connect({name: "browser_events"});
 
 ////New tab and changes within tab url
 //chrome.tabs.onUpdated.addListener(function () {
@@ -26,10 +30,15 @@ chrome.runtime.onConnect.addListener(function (port) {
       var sender_tab_id = sender.tab.id;
       var sender_tab_url = urlSanit(sender.tab.url);
 
-      if (request.message === "tab_changed_url") {
-        request["tab_id"] = sender_tab_id;
-        //sendToServer(request, 'extension_api/active_pages/new_page.json')
-        sendToUxr(request);
+      if (request.message === "element_xpath") {
+          request["tab_id"] = sender_tab_id;
+          request["tab_url"] = sender_tab_url;
+
+          sendAoiEvent(request);
+      } else if (request.message === "tab_changed_url") {
+          request["tab_id"] = sender_tab_id;
+          //sendToServer(request, 'extension_api/active_pages/new_page.json')
+        sendBrowserEvent(request);
       } else if (request.message === 'active_status') {
           request["tab_id"] = sender_tab_id;
           request["previous_tab_id"] = previous_tab_id;
@@ -37,24 +46,24 @@ chrome.runtime.onConnect.addListener(function (port) {
         //  'tab_id': sender_tab_id,
         //  'previous_tab_id': previous_tab_id
         //}, 'extension_api/active_pages/tab_change.json');
-          sendToUxr(request);
+          sendBrowserEvent(request);
           previous_tab_id = sender_tab_id;
       }
       else if (request.message === 'lost_focus' || request.message === 'unload') {
         request.params['tab_id'] = sender_tab_id;
         //sendToServer(request.params, 'extension_api/active_pages/page_lost_focus.json')
-        sendToUxr(request);
+        sendBrowserEvent(request);
       }
       else if (request.message === 'send_to_server') {
         request.params['tab_id'] = sender_tab_id;
         //sendToServer(request.params, 'extension_api/' + request.action)
-        sendToUxr(request);
+        sendBrowserEvent(request);
       }     
     }
   )
   ;
-})
-;
+});
+
 function actual_viewing_tab(callback) {
   chrome.tabs.query({active: true, currentWindow: true}, function (arrayOfTabs) {
     callback(arrayOfTabs[0]);
@@ -121,7 +130,15 @@ function sendToServer(send_data, action) {
 
 }
 
-function sendToUxr(data) {
+function sendBrowserEvent(event) {
+    sendToUxr(event, tokens.asq_browser_token);
+}
+
+function sendAoiEvent(event) {
+    sendToUxr(event, tokens.asq_aoi_token);
+}
+
+function sendToUxr(data, token) {
   if (data === null)
     return;
   
@@ -134,7 +151,7 @@ function sendToUxr(data) {
 		type : "POST",
 		url : "http://localhost:55555/api/UXS/SendEvent",
 		data : {
-			"Token" : "ASQ-br0wseR_30126",
+			"Token" : token,
 			"Value" : JSON.stringify(data),
 			"ValidFrom" : new Date().toISOString() 
 		},

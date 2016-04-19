@@ -1,23 +1,55 @@
+var eyeInterval = null;
+var eyeTimeout = null;
+var FREQ = 60;
+var counter = 0;
+
+function startGettingEyeCoords() {
+    eyeInterval = setInterval(function() {
+        getEyeCoordinates();
+    }, 1000/FREQ);
+}
+
+function stopGettingEyeCoords() {
+    clearInterval(eyeInterval);
+}
+
+//function getEyeCoordinatesTimed() {
+//    eyeTimeout = setTimeout(function() {
+//        getEyeCoordinates();
+//        getEyeCoordinatesTimed();
+//    }, 1000/FREQ);
+//}
+
+//function interruptEyeCoordinatesTimed() {
+//    clearTimeout(eyeTimeout);
+//}
+
 function getEyeCoordinates() {
+    var lcounter = ++counter;
+    DEBUG && console.log("Getting eye coords " + lcounter + ": " + new Date().toISOString());
+
     $.ajax({
         type: "GET",
         url: "https://localhost.konopka.sk:55554/api/Buffer/GetDeviceLastData?device=ET",
         dataType: 'json',
         success: function (response) {
-            console.log(response);
+            DEBUG && console.log(response);
+            DEBUG && console.log("Processing eye coords " + lcounter + ": " + new Date().toISOString());
 
             if (response.LastData === null || response.LastData === undefined)
                 return;
 
             var xpath = getElementXpathFromPosition(response.LastData);
 
-            console.log(xpath);
-            //if (elemId != "NA") {
-            //    sendEvent(elemId);
-            //}
+            DEBUG && console.log("Eye coords processed " + lcounter + ": " + new Date().toISOString());
+            DEBUG && console.log(xpath);
+
+            if (xpath !== null) {
+                sendElementXpathForPosition(response.LastData, xpath);
+            }
         },
         error: function (error) {
-            console.log(error.statusText);
+            DEBUG && console.log(error.statusText);
         }
     });
 }
@@ -94,4 +126,13 @@ function isLookingInBrowser(x, y) {
     var ynormal = y / window.innerHeight;
 
     return !(xnormal > 1 || xnormal < 0 || ynormal > 1 || ynormal < 0);
+}
+
+function sendElementXpathForPosition(trackerData, xpath) {
+    port.postMessage({
+        "message": "element_xpath",
+        "timestamp": trackerData.TimeStamp,
+        "tobii_ticks": trackerData.TobiiTicks,
+        "xpath": xpath
+    });
 }

@@ -8,11 +8,6 @@ var is_fully_active = false;
 var top_words = null;
 var sent_description = false;
 
-var eyeInterval = null;
-var FREQ = 60;
-
-var port = chrome.runtime.connect({name: "productivity_communication"});
-
 chrome.runtime.onMessage.addListener(
   function (request) {
     //var currentUrl = $(location).attr('href');
@@ -21,16 +16,6 @@ chrome.runtime.onMessage.addListener(
     //}
   }
 );
-
-function startGettingEyeCoords() {
-  eyeInterval = setInterval(function() {
-    getEyeCoordinates();
-  }, 1000/FREQ);
-}
-
-function stopGettingEyeCoords() {
-  clearInterval(eyeInterval);
-}
 
 function sendNewPageData() {
   var currentUrl = $(location).attr('href');
@@ -94,6 +79,7 @@ function focusGained() {
   smoothFocusGain();
 
   startGettingEyeCoords();
+  //getEyeCoordinatesTimed();
 }
 
 function smoothFocusGain() {
@@ -124,6 +110,7 @@ function focusLost() {
   active_timer.stop();
 
   stopGettingEyeCoords();
+  //interruptEyeCoordinatesTimed();
 }
 
 function smoothFocusLost(params) {

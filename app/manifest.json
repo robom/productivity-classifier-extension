@@ -57,6 +57,7 @@
                 "lib/tfidf/collections_tools.js",
                 "lib/stopwatch.js",
                 "scripts/xpath.js",
+                "scripts/init.js",
                 "scripts/eyes.js",
                 "scripts/contentscript.js"
             ],
