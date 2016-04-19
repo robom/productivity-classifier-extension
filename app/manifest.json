@@ -56,6 +56,8 @@
                 "lib/tfidf/corpus_tools.js",
                 "lib/tfidf/collections_tools.js",
                 "lib/stopwatch.js",
+                "scripts/xpath.js",
+                "scripts/eyes.js",
                 "scripts/contentscript.js"
             ],
             "run_at": "document_end",
