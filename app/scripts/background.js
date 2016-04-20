@@ -141,6 +141,9 @@ function sendAoiEvent(event) {
 function sendToUxr(data, token) {
   if (data === null)
     return;
+
+    var timestamp = new Date().toISOString();
+    data['timestamp'] = timestamp;
   
     DEBUG && console.log('----------- SENDING TO UXR ------------------');
     DEBUG && console.log('Started sending at: ' + new Date().toISOString());
@@ -154,7 +157,7 @@ function sendToUxr(data, token) {
 		data : {
 			"Token" : token,
 			"Value" : JSON.stringify(data),
-			"ValidFrom" : new Date().toISOString() 
+			"ValidFrom" : timestamp
 		},
 		dataType : 'json',
 		success : function(response) {
