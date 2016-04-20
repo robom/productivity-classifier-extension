@@ -1,6 +1,6 @@
 var eyeInterval = null;
 var eyeTimeout = null;
-var FREQ = 60;
+var FREQ = 20;
 var counter = 0;
 
 function startGettingEyeCoords() {

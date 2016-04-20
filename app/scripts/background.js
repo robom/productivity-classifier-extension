@@ -143,6 +143,7 @@ function sendToUxr(data, token) {
     return;
   
     DEBUG && console.log('----------- SENDING TO UXR ------------------');
+    DEBUG && console.log('Started sending at: ' + new Date().toISOString());
     DEBUG && console.log(data);
     DEBUG && console.log(JSON.stringify(data));
     DEBUG && console.log('^^^^^^^^^^^ SENDING TO UXR ^^^^^^^^^^^^^^^^^^');
@@ -161,7 +162,10 @@ function sendToUxr(data, token) {
 		},
 		error : function(error) {
 			DEBUG && console.log(error.statusText);
-		}
+		},
+        complete : function() {
+            DEBUG && console.log('Finished sending to UXR at:' + new Date().toISOString());
+        }
 	});
 }
 
