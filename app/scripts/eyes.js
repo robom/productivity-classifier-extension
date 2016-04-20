@@ -13,16 +13,15 @@ function stopGettingEyeCoords() {
     clearInterval(eyeInterval);
 }
 
-//function getEyeCoordinatesTimed() {
-//    eyeTimeout = setTimeout(function() {
-//        getEyeCoordinates();
-//        getEyeCoordinatesTimed();
-//    }, 1000/FREQ);
-//}
+function getEyeCoordinatesTimed() {
+    eyeTimeout = setTimeout(function() {
+        getEyeCoordinates();
+    }, 1000/FREQ);
+}
 
-//function interruptEyeCoordinatesTimed() {
-//    clearTimeout(eyeTimeout);
-//}
+function interruptEyeCoordinatesTimed() {
+    clearTimeout(eyeTimeout);
+}
 
 function getEyeCoordinates() {
     var lcounter = ++counter;
@@ -50,6 +49,10 @@ function getEyeCoordinates() {
         },
         error: function (error) {
             DEBUG && console.log(error.statusText);
+        },
+        complete: function () {
+            if (SYNC && document.hasFocus())
+                getEyeCoordinatesTimed();
         }
     });
 }

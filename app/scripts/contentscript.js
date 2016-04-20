@@ -78,8 +78,10 @@ function focusGained() {
   is_active = true;
   smoothFocusGain();
 
-  startGettingEyeCoords();
-  //getEyeCoordinatesTimed();
+  if (SYNC)
+    getEyeCoordinatesTimed();
+  else
+    startGettingEyeCoords();
 }
 
 function smoothFocusGain() {
@@ -109,8 +111,10 @@ function focusLost() {
   smoothFocusLost(params);
   active_timer.stop();
 
-  stopGettingEyeCoords();
-  //interruptEyeCoordinatesTimed();
+  if (SYNC)
+    interruptEyeCoordinatesTimed();
+  else
+    stopGettingEyeCoords();
 }
 
 function smoothFocusLost(params) {
